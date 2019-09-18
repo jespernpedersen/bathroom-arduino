@@ -12,17 +12,22 @@
         appId: "1:690661487151:web:866fcc9d85cfde08188cda"
     };
 
+    // Initilization
     firebase.initializeApp(config);
     database = firebase.database();
 
-    var ref = database.ref('DHT11/Humidity');
+    // What database object to choose
+    var ref = database.ref('DHT11');
+
+    // On incoming data, retrieve data
     ref.on('value', gotData, errData);
 
-
+    // Good authentication
     function gotData(data) {
         console.log(data);
     }
 
+    // Bad authentication
     function errData(err) {
         console.log("ERROR");
         console.log(err);

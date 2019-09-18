@@ -26,10 +26,7 @@ void setup() {
   WiFi.begin(WIFI_SSID, WIFI_PASSWORD);                                     //try to connect with wifi
   Serial.print("Connecting to ");
   Serial.print(WIFI_SSID);
-  while (WiFi.status() != WL_CONNECTED) {
-    Serial.print(".");
-    delay(500);
-  }
+
   Serial.println();
   Serial.print("Connected to ");
   Serial.println(WIFI_SSID);
@@ -41,24 +38,19 @@ void setup() {
 }
 
 void loop() { 
-
+ 
+  if (WiFi.status() == WL_CONNECTED)  {     
+    digitalWrite(LED_BUILTIN, HIGH);                             // make bultin led ON
+    digitalWrite(led, HIGH);                                    // make external led ON
+    Firebase.setString("LED_STATUS", "ON");  
+  }
   
-    fireStatus = Firebase.getString("LED_STATUS");              // get ld status input from firebase
-    if (fireStatus == "ON" || fireStatus == "on") {                                   // compare the input of led status received from firebase
-      Serial.println("Led Turned ON");                         
-      digitalWrite(LED_BUILTIN, HIGH);                             // make bultin led ON
-      digitalWrite(led, HIGH);                                    // make external led ON
-    } 
-     else if (fireStatus == "OFF" || fireStatus == "off") {                                // compare the input of led status received from firebase
-      Serial.println("Led Turned OFF");
-      digitalWrite(LED_BUILTIN, LOW);                                // make bultin led OFF
-      digitalWrite(led, LOW);                                         // make external led OFF
-    }
-      
-    else {
-      Serial.println("Wrong Credential! Please send ON/OFF");
-    }
-  
+  else {     
+    digitalWrite(LED_BUILTIN, LOW);                             // make bultin led ON
+    digitalWrite(led, LOW);                                    // make external led ON
+    Firebase.setString("LED_STATUS", "OFF");              
+  }
+   
   float h = dht.readHumidity();                                              // Reading temperature or humidity takes about 250 milliseconds!
   float t = dht.readTemperature();                                           // Read temperature as Celsius (the default)
     
